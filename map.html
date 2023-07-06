@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Earthquake Map</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <style>
+    #map {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Create a map centered on a specific location
+    const map = L.map('map').setView([0, 0], 2);
+
+    // Add a tile layer to the map (you can use your own tile layer)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Fetch GeoJSON data
+    fetch('http://localhost:3001/earthquakes')
+      .then((response) => response.json())
+      .then((data) => {
+        // Create a Leaflet GeoJSON layer and add it to the map
+        L.geoJSON(data, {
+          pointToLayer: function (feature, latlng) {
+            // Customize the marker style
+            return L.circleMarker(latlng, {
+              radius: 5,
+              fillColor: 'red',
+              color: '#000',
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.8,
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            // Add a popup with feature properties to each marker
+            layer.bindPopup(`
+              <strong>Date/Time:</strong> ${feature.properties.datetime}<br>
+              <strong>Region:</strong> ${feature.properties.region}<br>
+              <strong>Magnitude:</strong> ${feature.properties.magnitude}
+            `);
+          },
+        }).addTo(map);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch earthquake data:', error);
+      });
+  </script>
+</body>
+</html>
