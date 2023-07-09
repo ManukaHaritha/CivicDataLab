@@ -1,6 +1,6 @@
 const express = require('express');
+const Earthquakedata = require('./earthquake');
 const Earthquake = require('./earthquake');
-
 const app = express();
 
 // Enable CORS for all routes
@@ -17,8 +17,10 @@ app.use((req, res, next) => {
 
 // Define API routes
 app.get('/earthquakes', async (req, res) => {
+ 
   try {
     const earthquakes = await Earthquake.find();
+    console.log(earthquakes);
     // Transform the earthquakes into GeoJSON format
     const geojson = {
         type: 'FeatureCollection',
@@ -52,4 +54,6 @@ app.get('/earthquakes', async (req, res) => {
   }
 });
 
+
 module.exports = app;
+
