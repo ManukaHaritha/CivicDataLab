@@ -57,9 +57,9 @@ async function fetchDataAndStore() {
   } catch (error) {
     console.error('Failed to fetch or store earthquake data:', error);
   } finally {
-    mongoose.connection.close();
+    //mongoose.connection.close();
   }
 }
-
+fetchDataAndStore() ;
 module.exports = fetchDataAndStore;
 module.exports=Earthquake;

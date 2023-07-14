@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 const app = require('./api');
-require('./earthquake');
+const { fetchDataAndStore, Earthquake } = require('./earthquake');
 // Establish MongoDB connection
-mongoose.connect('mongodb://localhost/GeoDb', {
+//mongoose.connect('mongodb://127.0.0.1:27017/', {
+  mongoose.connect('mongodb+srv://9haritha:civicdatalab@map-api.niogn3s.mongodb.net/?retryWrites=true&w=majority',{
+  
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(() => {
     console.log('Connected to MongoDB');
     // Start the API server
-    app.listen(3001, () => {
+
+    const PORT=process.env.PORT;
+    app.listen(PORT, () => {
       console.log('API server is running on port 3000');
     });
   })
