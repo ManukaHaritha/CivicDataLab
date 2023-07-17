@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
 app.get('/map.html',(req,res)=>{
 
-  res.send('map.html');
+  res.sendFile('map.html');
 });
 
 // Define API routes
