@@ -14,7 +14,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/map.html',(req,res)=>{
+app.get('/map',(req,res)=>{
 
   res.sendFile(map.html);
 });
