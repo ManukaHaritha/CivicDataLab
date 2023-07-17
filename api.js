@@ -13,12 +13,12 @@ app.use((req, res, next) => {
   );
   next();
 });
+const path = require('path');
 
-app.get('/map',(req,res)=>{
-
-  res.sendFile(map.html);
+app.get('/map', (req, res) => {
+  const filePath = path.join(__dirname, 'map.html');
+  res.sendFile(filePath);
 });
-
 // Define API routes
 app.get('/earthquakes', async (req, res) => {
   try {
