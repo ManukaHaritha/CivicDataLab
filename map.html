@@ -26,7 +26,8 @@
     }).addTo(map);
 
     // Fetch GeoJSON data
-    fetch('http://localhost:3000/earthquakes')
+    //fetch('http://localhost:3000/earthquakes')
+    fetch('https://civicdatalab-map.onrender.com/earthquakes')
       .then((response) => response.json())
       .then((data) => {
         // Create a Leaflet GeoJSON layer and add it to the map
