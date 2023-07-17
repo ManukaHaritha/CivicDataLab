@@ -2,6 +2,7 @@ const express = require('express');
 const Earthquake = require('./earthquake');
 
 const app = express();
+const path =require('path');
 
 // Enable CORS for all routes
 app.use((req, res, next) => {
@@ -13,12 +14,16 @@ app.use((req, res, next) => {
   );
   next();
 });
-const path = require('path');
-
 app.get('/map', (req, res) => {
-  const filePath = path.join(__dirname, 'map.html');
-  res.sendFile(filePath);
+  try {
+    const filePath = path.join(__dirname, 'map.html');
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error sending file:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 // Define API routes
 app.get('/earthquakes', async (req, res) => {
   try {
