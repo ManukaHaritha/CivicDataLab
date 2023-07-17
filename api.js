@@ -14,6 +14,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/map.html',(req,res)=>{
+
+  res.send('map.html');
+});
 
 // Define API routes
 app.get('/earthquakes', async (req, res) => {
