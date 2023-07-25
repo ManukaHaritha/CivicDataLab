@@ -1,5 +1,5 @@
 const express = require('express');
-const Earthquakedata = require('./earthquake');
+//const Earthquakedata = require('./earthquake');
 const Earthquake = require('./earthquake');
 const app = express();
 

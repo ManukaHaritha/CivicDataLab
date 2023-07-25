@@ -13,12 +13,15 @@ const earthquakeSchema = new mongoose.Schema({
 });
 
 const Earthquake = mongoose.model('Earthquake', earthquakeSchema);
+const axiosInstance = axios.create({
+  timeout: 10000, // Set a higher timeout value in milliseconds (e.g., 10000 for 10 seconds)
+});
 
 async function fetchDataAndStore() {
   try {
     // Make HTTP GET request to the API endpoint
-    const response = await axios.get('https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json');
-
+    const response = await axiosInstance.get('https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json');
+    const myapi = await axios.get('http://localhost:3000/earthquakes');
     // Extract earthquake data from the API response
     const { gempa } = response.data.Infogempa;
     const earthquakes = [];
@@ -29,28 +32,28 @@ async function fetchDataAndStore() {
 
       try {
         const datetime = moment(datetimeString, 'DD MMM YYYY HH:mm:ss Z [WIB]').toDate();
-        
-        const earthquake = new Earthquake({
-          location: {
-            latitude: parseFloat(earthquakeData.Lintang),
-            longitude: parseFloat(earthquakeData.Bujur),
-          },
-          datetime,
-          region: earthquakeData.Wilayah,
-          magnitude: parseFloat(earthquakeData.Magnitude),
-          
-        });
+        const existingEarthquake = await Earthquake.findOne({ datetime });
 
-        earthquakes.push(earthquake);
+        if (existingEarthquake) {
+          console.log(`Earthquake with datetime ${datetimeString} already exists in the collection.`);
+        } else {
+          const earthquake = new Earthquake({
+            location: {
+              latitude: parseFloat(earthquakeData.Lintang),
+              longitude: parseFloat(earthquakeData.Bujur),
+            },
+            datetime,
+            region: earthquakeData.Wilayah,
+            magnitude: parseFloat(earthquakeData.Magnitude),
+          });
+
+          await earthquake.save();
+          console.log(`New earthquake with datetime ${datetimeString} inserted into the collection.`);
+        }
       } catch (error) {
         console.warn(`Invalid date for earthquake: ${datetimeString}`);
         continue;
       }
-    }
-
-    // Save each valid earthquake document to the MongoDB collection
-    for (const earthquake of earthquakes) {
-      await earthquake.save();
     }
 
     console.log('Earthquake data stored successfully.');
@@ -61,4 +64,5 @@ async function fetchDataAndStore() {
   }
 }
 fetchDataAndStore();
-module.exports=Earthquake;
+module.exports = Earthquake;
+
